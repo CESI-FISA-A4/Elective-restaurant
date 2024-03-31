@@ -1,23 +1,23 @@
-const mongoose = require("mongoose");
-const { Restaurant } = require("../models/Restaurant");
-// import restaurantRoutes from "../routes/restaurantRoutes";
+const { mongoose } = require("mongoose");
+const levenshtein = require('js-levenshtein');
+const sanitize  = require("mongo-sanitize");
+const { Restaurant } = require("../models/restaurant.model");
+
 module.exports = {
-  // get - FuzzyMatch
   getRestaurantsByFuzzyMatch: async (req, res) => {
     try {
+      const { name } = sanitize(req.body);
       if (!name) return res.status(400).send('name Required !');
-      const { name } = req.body;
-      const restaurantList = [];
-      return res.status(200).json(restaurantList);    
+      const restaurantList = await Restaurant.find();
+      const macthingRestaurants = restaurantList.filter(restaurant => levenshtein(restaurant.name, name) <= 5);
+      return res.status(200).json(macthingRestaurants);
     } catch (error) {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
-  // get - FindbyID
   getRestaurantsbyId: async (req, res) => {
     try {
-      console.log(req);
-      const { id } = req.params;
+      const { id } = sanitize(req.params);
       if (!id) return res.status(400).send('id Required !');
       const restaurant = await Restaurant.findById(id);
       return res.status(200).json(restaurant);
@@ -35,19 +35,22 @@ module.exports = {
   },
   patchRestaurant: async (req, res) => {
     try {
-      const { id, name, address, acceptTicket, description, imgUrl } = req.body;
-      if (!id) return res.status(400).send('No id sent');
-
+      const { id } = sanitize(req.params);
+      const { name, address, acceptTicket, description, imgUrl } = sanitize(req.body);
+      if (!name && !address && !acceptTicket && !description && !imgUrl)  return res.status(400).send('No info sent');
+      await Restaurant.findByIdAndUpdate(id,{ name, address, acceptTicket, description, imgUrl})
+      return res.status(200).json({ response: 'Restaurant updated successfully' });
     } catch (error) {
-
+      return res.status(500).json({ error: `Internal Server Error` });
     }
   },
   putRestaurant: async (req, res) => {
     try {
-      const { id, name, address, acceptTicket, description, imgUrl } = req.body;
+      const { id } = sanitize(req.params)
+      const { name, address, acceptTicket, description, imgUrl } = sanitize(req.body);
       if (!(id && name && address && acceptTicket && description)) return res.status(400).send('Not all required infos sent');
       await Restaurant.findByIdAndUpdate(id, { name, address, acceptTicket, description, imgUrl });
-      return res.status(200).json({ response: 'Restaurant modified successfully' });
+      return res.status(200).json({ response: 'Restaurant updated successfully' });
     } catch (error) {
       return res.status(500).json({ error: `Internal Server Error` });
     }
@@ -55,7 +58,7 @@ module.exports = {
   ,
   deleteRestaurant: async (req, res) => {
     try {
-      const { id } = req.body;
+      const { id } = sanitize(req.params)
       if (!id) return res.status(400).send('id Required !');
       await Restaurant.findByIdAndDelete(id)
       return res.status(200).json({ response: 'Restaurant deleted successfully' });
@@ -65,7 +68,7 @@ module.exports = {
   },
   createRestaurant: async (req, res) => {
     try {
-      const { name, address, acceptTicket, description, imgUrl } = req.body;
+      const { name, address, acceptTicket, description, imgUrl } = sanitize(req.body);
       if (!name || !address || !acceptTicket || !description) return res.status(400).send('Not all required infos sent');
       Restaurant.create({ name, address, acceptTicket, description, imgUrl })
       return res.status(200).json({ response: 'Restaurant created successfully' });
