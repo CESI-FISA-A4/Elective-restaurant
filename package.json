@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/swagger-ui": "^3.0.0",
+    "axios": "^1.6.8",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
