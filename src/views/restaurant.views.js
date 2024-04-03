@@ -1,7 +1,6 @@
 const { mongoose, isValidObjectId } = require("mongoose");
 const levenshtein = require('js-levenshtein');
 const { Restaurant } = require("../models/restaurant.model");
-
 const errors = {
   invalidId: (() => {
     const err = Error("Invalid Id format");

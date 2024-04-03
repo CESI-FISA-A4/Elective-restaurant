@@ -1,12 +1,14 @@
 require('dotenv').config();
 const restaurantRoutes = require('./src/routes/restaurant.routes');
 const { initDatabase } = require('./src/utils/initMongoDB');
+const { setupSwagger } = require('./src/utils/swagger');
+
 const fastify = require("fastify")();
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 
 initDatabase();
-
+setupSwagger(fastify);
 fastify.register(restaurantRoutes, { prefix: "/api/restaurants" });
 
 fastify.listen({ port: PORT, host: HOST }, (err) => {
