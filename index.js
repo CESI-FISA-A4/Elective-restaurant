@@ -1,21 +1,19 @@
 require('dotenv').config();
-const express = require('express');
-const restaurantRoutes = require('./app/routes/restaurant.routes');
-const { initDatabase } = require('./app/utils/initMongoDB');
-const bodyParser = require('body-parser');
-
-const app = express();
+const restaurantRoutes = require('./src/routes/restaurant.routes');
+const { initDatabase } = require('./src/utils/initMongoDB');
+const fastify = require("fastify")();
+const PORT = process.env.PORT;
+const HOST = process.env.HOST;
 
 initDatabase();
 
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-app.use("/api/restaurants",restaurantRoutes)
+fastify.register(restaurantRoutes, { prefix: "/api/restaurants" });
 
-app.listen(
-  process.env.PORT,
-  process.env.HOST,
-  () => {
-      console.log(`Server started at ${process.env.HOST}:${process.env.PORT}`);
+fastify.listen({ port: PORT, host: HOST }, (err) => {
+  if (err) {
+    console.error(err);
+    process.exit(1);
   }
-)
+
+  console.log(`Server started : ${PORT}`);
+})
