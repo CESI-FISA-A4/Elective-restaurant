@@ -50,7 +50,7 @@ module.exports = {
     const { name, address, acceptTicket, description, imgUrl } = req.body;
 
     if (!isValidObjectId(id)) return errors.invalidId;
-    if (!(id && name && address && acceptTicket && description)) return errors.missingRequiredParams;
+    if (!id || !name || !address || !acceptTicket || !description) return errors.missingRequiredParams;
 
     await Restaurant.findByIdAndUpdate(id, { name, address, acceptTicket, description, imgUrl });
     return 'Restaurant updated successfully';
@@ -67,7 +67,7 @@ module.exports = {
   createRestaurant: async (req, res) => {
     const { name, address, acceptTicket, description, imgUrl } = req.body;
 
-    if (!(name && address && acceptTicket && description)) return errors.missingRequiredParams;
+    if (!name || !address || !acceptTicket || !description) return errors.missingRequiredParams;
 
     Restaurant.create({ name, address, acceptTicket, description, imgUrl })
     return 'Restaurant created successfully';
