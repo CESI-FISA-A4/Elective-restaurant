@@ -12,8 +12,8 @@ module.exports = {
                     "serviceLabel": "Service Restaurant",
                     "host": process.env.HOST,
                     "port": process.env.PORT,
-                    "entrypointUrl": "/api/restaurant",
-                    "redirectUrl": "/api/restaurant"
+                    "entrypointUrl": "/api/restaurants",
+                    "redirectUrl": "/api/restaurants"
                 }
             });
         } catch (error) {
