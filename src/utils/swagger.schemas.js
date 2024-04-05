@@ -2,7 +2,7 @@ const restaurantProperties = {
   name: { type: 'string' },
   address: { type: 'string' },
   acceptTicket: { type: "boolean" },
-  decription: {type: "string"},
+  description: {type: "string"},
   imgUrl: {type: "string"}
 }
 
@@ -22,7 +22,7 @@ module.exports = {
       },
       body: {
         type: 'object',
-        required: ["name","address","acceptTicket","decription","imgUrl"],
+        required: ["name","address","acceptTicket","description","imgUrl"],
         properties: restaurantProperties
       }
     }
@@ -88,7 +88,7 @@ module.exports = {
       description: 'Create a new Restaurant',
       body: {
         type: 'object',
-        required: ["name","address","acceptTicket","decription","imgUrl"],
+        required: ["name","address","acceptTicket","description","imgUrl"],
         properties: restaurantProperties
       }
     }
