@@ -26,7 +26,7 @@ module.exports = {
     const { id } = req.params;
 
     if (!isValidObjectId(id)) return errors.invalidId;
-    
+
     const restaurant = await Restaurant.findById(id);
     return restaurant;
   },
@@ -59,16 +59,20 @@ module.exports = {
     const { id } = req.params;
 
     if (!isValidObjectId(id)) return errors.invalidId;
-    
+
     await Restaurant.findByIdAndDelete(id)
     return 'Restaurant deleted successfully';
   },
   createRestaurant: async (req, res) => {
     const { name, address, acceptTicket, description, imgUrl } = req.body;
 
-    if (!name || !address || !acceptTicket || !description) return errors.missingRequiredParams;
+    const { userId, roleLabel } = req.query;
 
-    Restaurant.create({ name, address, acceptTicket, description, imgUrl })
+    const restaurantOwnerId = (roleLabel == "restaurantOwner") ? userId : req.body.userId;
+
+    if (!name || !address || !acceptTicket || !description || !restaurantOwnerId) return errors.missingRequiredParams;
+
+    Restaurant.create({ name, address, acceptTicket, description, imgUrl, restaurantOwnerId });
     return 'Restaurant created successfully';
   }
 }
