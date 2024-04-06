@@ -12,6 +12,11 @@ const errors = {
     err.statusCode = 400;
     return err;
   })(),
+  wrongRestaurantOwner: (() => {
+    const err = Error("You can't see the restaurants of this person");
+    err.statusCode = 400;
+    return err;
+  })()
 }
 
 module.exports = {
@@ -31,7 +36,13 @@ module.exports = {
     return restaurant;
   },
   getRestaurants: async (req, res) => {
-    const allRestaurants = await Restaurant.find();
+    const { name,address,acceptTicket,restaurantOwnerId } = req.query;
+    const filter = {}
+    if (name) filter["name"] = name;
+    if (address) filter["address"] = address;
+    if (acceptTicket) filter["acceptTicket"] = acceptTicket;
+    if (restaurantOwnerId) filter["restaurantOwnerId"] = restaurantOwnerId;
+    const allRestaurants = await Restaurant.find(filter);
     return allRestaurants;
   },
   patchRestaurant: async (req, res) => {
