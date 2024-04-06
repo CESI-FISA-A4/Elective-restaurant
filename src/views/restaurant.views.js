@@ -13,7 +13,12 @@ const errors = {
     return err;
   })(),
   wrongRestaurantOwner: (() => {
-    const err = Error("You can't see the restaurants of this person");
+    const err = Error("You don't have the rights on this restaurants");
+    err.statusCode = 403;
+    return err;
+  })(),
+  restaurantNotFound: (() => {
+    const err = Error("Specified restaurant does not exists");
     err.statusCode = 400;
     return err;
   })()
@@ -36,7 +41,7 @@ module.exports = {
     return restaurant;
   },
   getRestaurants: async (req, res) => {
-    const { name,address,acceptTicket,restaurantOwnerId } = req.query;
+    const { name, address, acceptTicket, restaurantOwnerId } = req.query;
     const filter = {}
     if (name) filter["name"] = name;
     if (address) filter["address"] = address;
@@ -49,6 +54,10 @@ module.exports = {
     const { id } = req.params;
     const { name, address, acceptTicket, description, imgUrl } = req.body;
 
+    const { userId, roleLabel } = req.query;
+    const targetRestaurant = await Restaurant.findById(id)
+    if (!targetRestaurant) return errors.restaurantNotFound;
+    if (roleLabel == "restaurantOwner" && userId != targetRestaurant.restaurantOwnerId) return errors.wrongRestaurantOwner;
     if (!isValidObjectId(id)) return errors.invalidId;
     if (!name && !address && !acceptTicket && !description && !imgUrl) return errors.missingRequiredParams;
 
@@ -58,17 +67,22 @@ module.exports = {
   putRestaurant: async (req, res) => {
     const { id } = req.params;
     const { name, address, acceptTicket, description, imgUrl } = req.body;
-
+    const { userId, roleLabel } = req.query;
+    const targetRestaurant = await Restaurant.findById(id)
+    if (!targetRestaurant) return errors.restaurantNotFound;
+    if (roleLabel == "restaurantOwner" && userId != targetRestaurant.restaurantOwnerId) return errors.wrongRestaurantOwner;
     if (!isValidObjectId(id)) return errors.invalidId;
     if (!id || !name || !address || !acceptTicket || !description) return errors.missingRequiredParams;
 
     await Restaurant.findByIdAndUpdate(id, { name, address, acceptTicket, description, imgUrl });
     return 'Restaurant updated successfully';
-  }
-  ,
+  },
   deleteRestaurant: async (req, res) => {
     const { id } = req.params;
-
+    const { userId, roleLabel } = req.query;
+    const targetRestaurant = await Restaurant.findById(id)
+    if (!targetRestaurant) return errors.restaurantNotFound;
+    if (roleLabel == "restaurantOwner" && userId != targetRestaurant.restaurantOwnerId) return errors.wrongRestaurantOwner;
     if (!isValidObjectId(id)) return errors.invalidId;
 
     await Restaurant.findByIdAndDelete(id)
