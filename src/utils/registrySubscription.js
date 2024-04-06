@@ -13,10 +13,7 @@ module.exports = {
                     "host": process.env.HOST,
                     "port": process.env.PORT,
                     "entrypointUrl": "/api/restaurants",
-                    "redirectUrl": "/api/restaurants",
-                    routeProtections: [
-                        { methods: ["POST"], route: "/", roles: ["restaurantOwner", "admin"] },
-                    ]
+                    "redirectUrl": "/api/restaurants"
                 }
             });
         } catch (error) {
