@@ -4,7 +4,8 @@ const restaurantModel = new mongoose.Schema({
   address: String,
   acceptTicket: Boolean,
   description: String,
-  imgUrl: String
+  imgUrl: String,
+  restaurantOwnerId: Number
 });
 const Restaurant = mongoose.model('Restaurant', restaurantModel);
 
