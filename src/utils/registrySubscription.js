@@ -1,5 +1,4 @@
 const axios = require("axios");
-require('dotenv').config();
 
 module.exports = {
     subscribeToApiGateway: async() => {
@@ -8,12 +7,17 @@ module.exports = {
                 method: "POST",
                 baseURL: `http://${process.env.GATEWAY_HOST}:${process.env.GATEWAY_PORT}`,
                 url: `/registry/services`,
+                headers: { 'Content-Type': 'application/json' },
                 data: {
-                    "serviceLabel": "Service Restaurant",
-                    "host": process.env.HOST,
-                    "port": process.env.PORT,
-                    "entrypointUrl": "/api/restaurants",
-                    "redirectUrl": "/api/restaurants"
+                    serviceIdentifier: "restaurant-service",
+                    serviceLabel: "Service Restaurant",
+                    host: process.env.HOST,
+                    port: process.env.PORT,
+                    entrypointUrl: "/api/restaurants",
+                    redirectUrl: "/api/restaurants",
+                    routeProtections: [
+                        { methods: ["POST"], route: "/", roles: ["restaurantOwner", "admin"] },
+                    ]
                 }
             });
         } catch (error) {

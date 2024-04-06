@@ -66,6 +66,24 @@ module.exports = {
   schemaGetRestaurants: {
     schema: {
       description: 'Get all restaurants',
+      query: {
+        name: {
+          type: 'string',
+          description: 'Client id'
+        },
+        address: {
+          type: 'string',
+          description: 'Client id'
+        },
+        acceptTicket: {
+          type: 'string',
+          description: 'Client id'
+        },
+        restaurantOwnerId: {
+          type: 'string',
+          description: 'Client id'
+        }
+      }
     }
   },
   schemaGetRestaurantsbyId: {
