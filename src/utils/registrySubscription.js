@@ -17,6 +17,7 @@ module.exports = {
                     redirectUrl: "/api/restaurants",
                     routeProtections: [
                         { methods: ["POST"], route: "/", roles: ["restaurantOwner", "admin"] },
+                        { methods: ["PUT","PATCH","DELETE"], route: "/:id", roles: ["restaurantOwner", "admin"]}
                     ]
                 }
             });
