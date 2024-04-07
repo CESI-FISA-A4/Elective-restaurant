@@ -3,7 +3,8 @@ const restaurantProperties = {
   address: { type: 'string' },
   acceptTicket: { type: "boolean" },
   description: {type: "string"},
-  imgUrl: {type: "string"}
+  imgUrl: {type: "string"},
+  restaurantOwnerId: {type: "number"}
 }
 
 module.exports = {

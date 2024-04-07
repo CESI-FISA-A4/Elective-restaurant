@@ -50,7 +50,7 @@ module.exports = {
     const { name, address, acceptTicket, description, imgUrl } = req.body;
 
     if (!isValidObjectId(id)) return errors.invalidId;
-    if (!name && !address && !acceptTicket && !description && !imgUrl) return errors.missingRequiredParams;
+    if (!name && !address && acceptTicket==undefined && !description && !imgUrl) return errors.missingRequiredParams;
 
     await Restaurant.findByIdAndUpdate(id, { name, address, acceptTicket, description, imgUrl })
     return 'Restaurant updated successfully';
@@ -60,7 +60,7 @@ module.exports = {
     const { name, address, acceptTicket, description, imgUrl } = req.body;
 
     if (!isValidObjectId(id)) return errors.invalidId;
-    if (!id || !name || !address || !acceptTicket || !description) return errors.missingRequiredParams;
+    if (!id || !name || !address || acceptTicket==undefined || !description) return errors.missingRequiredParams;
 
     await Restaurant.findByIdAndUpdate(id, { name, address, acceptTicket, description, imgUrl });
     return 'Restaurant updated successfully';
@@ -76,12 +76,9 @@ module.exports = {
   },
   createRestaurant: async (req, res) => {
     const { name, address, acceptTicket, description, imgUrl } = req.body;
-
     const { userId, roleLabel } = req.query;
-
-    const restaurantOwnerId = (roleLabel == "restaurantOwner") ? userId : req.body.userId;
-
-    if (!name || !address || !acceptTicket || !description || !restaurantOwnerId) return errors.missingRequiredParams;
+    const restaurantOwnerId = (roleLabel == "restaurantOwner") ? userId : req.body.restaurantOwnerId;
+    if (!name || !address || acceptTicket==undefined || !description || !restaurantOwnerId) return errors.missingRequiredParams;
 
     Restaurant.create({ name, address, acceptTicket, description, imgUrl, restaurantOwnerId });
     return 'Restaurant created successfully';
