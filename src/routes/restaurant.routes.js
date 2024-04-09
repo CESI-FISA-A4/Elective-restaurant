@@ -1,9 +1,10 @@
 
-const { getRestaurants, createRestaurant, deleteRestaurant, putRestaurant, getRestaurantsbyId, getRestaurantsByFuzzyMatch, patchRestaurant } = require("../views/restaurant.views");
+const { getRestaurants, createRestaurant, deleteRestaurant, putRestaurant, getRestaurantsbyId, getRestaurantsByFuzzyMatch, patchRestaurant, ping } = require("../views/restaurant.views");
 
 const { schemaPutRestaurants, schemaPatchRestaurants, schemaDeleteRestaurants, schemaGetRestaurantsbyId, schemaGetRestaurants, schemaGetRestaurantsByFuzzyMatch, schemaCreateRestaurants } = require("../utils/swagger.schemas");
 
 const restaurantRoutes = function (instance, opts, next) {
+  instance.get('/ping', ping)
   instance.get('/', schemaGetRestaurants, getRestaurants);
   instance.post('/search', schemaGetRestaurantsByFuzzyMatch, getRestaurantsByFuzzyMatch);
   // positionner les :param à la fin du routing, car risque d'empêcher une route du genre de fonctionner

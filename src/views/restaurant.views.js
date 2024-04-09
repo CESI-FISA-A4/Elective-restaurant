@@ -25,6 +25,9 @@ const errors = {
 }
 
 module.exports = {
+  ping: async(req,res)=>{
+    return;
+  },
   getRestaurantsByFuzzyMatch: async (req, res) => {
     console.log(req.body);
     const { name } = req.body;
